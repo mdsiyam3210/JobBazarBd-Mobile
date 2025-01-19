@@ -20,7 +20,7 @@ class EmployerDrawerItems extends StatelessWidget {
           context,
           icon: Icons.assignment_turned_in_outlined,
           title: 'Applications',
-          route: '/employer/applications',
+          route: '/employer/apps',
         ),
         _buildDrawerItem(
           context,
@@ -56,7 +56,7 @@ class EmployerDrawerItems extends StatelessWidget {
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           onTap: () {
-            Navigator.pushReplacementNamed(context, route, arguments: arguments);
+            Navigator.pushNamed(context, route, arguments: arguments);
           },
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           tileColor: Colors.blueGrey.withOpacity(0.05),

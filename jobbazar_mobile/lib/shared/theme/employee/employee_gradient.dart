@@ -1,10 +1,11 @@
 
 import 'package:flutter/material.dart';
 
-BoxDecoration employeeDecoration = const BoxDecoration(
+BoxDecoration employeeDecoration = BoxDecoration(
   gradient: LinearGradient(
-    colors: [Color.fromARGB(255, 162, 182, 223), Color.fromARGB(255, 107, 140, 206)],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    colors: [Colors.blue.shade400, Colors.blue.shade800],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   ),
 );
+

@@ -62,4 +62,24 @@ class UserService {
       throw Exception("Error: $e");
     }
   }
+
+  Future<User> updateUser({required dynamic userData, required int userId}) async {
+    final newApiUrl = '$apiUrl/$userId';
+    try {
+      final response = await http.put(
+        Uri.parse(newApiUrl),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(userData),
+      );
+
+      Map<String, dynamic> responseMap = json.decode(response.body);
+      User user = User.fromJson(responseMap);
+      return user;
+    } catch (e) {
+      debugPrint('Error: $e');
+      throw Exception("Error: $e");
+    }
+  }
 }

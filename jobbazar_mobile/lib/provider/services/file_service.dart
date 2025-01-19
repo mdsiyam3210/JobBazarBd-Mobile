@@ -25,4 +25,21 @@ class FileService {
       throw Exception("Error: $e");
     }
   }
+
+  Future<String> uploadCv(File file, int userId) async {
+    try {
+      String newApiUrl = "http://$apiUrl/pdf/$userId";
+      FormData formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(file.path)
+      });
+      Response response = await _dio.post(newApiUrl, data: formData);
+      if (response.statusCode == 200) {
+        return "Cv uploaded successfully";
+      } else {
+        return "Cv upload failed";
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
 }

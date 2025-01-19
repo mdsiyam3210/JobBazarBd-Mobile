@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jobbazar_mobile/shared/page_appbar.dart';
 import 'package:jobbazar_mobile/shared/pages/args/job_args.dart';
-import 'package:jobbazar_mobile/shared/appbar.dart';
 import 'package:jobbazar_mobile/shared/bottom_nav.dart';
 import 'package:jobbazar_mobile/shared/drawer.dart';
 import 'package:jobbazar_mobile/shared/util/info_row.dart';
@@ -19,10 +19,7 @@ class JobInfo extends StatelessWidget {
         builder: (context) {
           return Scaffold(
             backgroundColor: jobArgs.theme?.colorScheme.secondary ?? Theme.of(context).colorScheme.secondary,
-            appBar: SharedAppBar(
-              title: "JobBazar Mobile",
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            appBar: const PageAppbar(title: "Job Info"),
             drawer: const AppDrawer(),
             bottomNavigationBar: const BottomNav(),
             body: Padding(

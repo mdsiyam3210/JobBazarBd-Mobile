@@ -1,3 +1,4 @@
+import 'package:common_constants/common_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:jobbazar_mobile/provider/models/user.dart';
 import 'package:jobbazar_mobile/provider/services/user_service.dart';
@@ -43,6 +44,21 @@ class AuthProvider with ChangeNotifier {
       final user = _userService.registerUser(userData: userData);
       return user;
     } catch (e) {
+      throw Exception("Error during registration: $e");
+    }
+    finally {
+      notifyListeners();
+    }
+  }
+
+  Future<User> updateUser(Map<String, dynamic> userData, int userId, BuildContext context) async {
+    try {
+      final user = _userService.updateUser(userData: userData, userId: userId);
+      Constants.showSnackbar(context, "Updated Succesfully");
+      return user;
+    } catch (e) {
+      debugPrint("Error: $e");
+      Constants.showSnackbar(context, "ERROR: Cant Update User. ${e.toString()}");
       throw Exception("Error during registration: $e");
     }
     finally {

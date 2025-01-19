@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jobbazar_mobile/shared/appbar.dart';
 import 'package:jobbazar_mobile/shared/bottom_nav.dart';
 import 'package:jobbazar_mobile/shared/drawer.dart';
+import 'package:jobbazar_mobile/shared/page_appbar.dart';
 import 'package:jobbazar_mobile/shared/pages/args/paid_plans_args.dart';
 import 'package:jobbazar_mobile/shared/theme/employee/employee_gradient.dart';
 
@@ -17,7 +17,7 @@ class PaidPlansPage extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            appBar: SharedAppBar(title: "JobBazar Mobile - Plans", color: args.theme?.colorScheme.primary ?? Theme.of(context).colorScheme.primary),
+            appBar: const PageAppbar(title: "Paid Plans"),
             bottomNavigationBar: const BottomNav(),
             drawer: const AppDrawer(),
             body: Container(

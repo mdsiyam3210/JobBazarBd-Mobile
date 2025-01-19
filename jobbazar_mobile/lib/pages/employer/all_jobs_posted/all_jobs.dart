@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jobbazar_mobile/provider/models/job.dart';
+import 'package:jobbazar_mobile/shared/page_appbar.dart';
 import 'package:jobbazar_mobile/shared/theme/employer/employer_gradient.dart';
 import 'package:jobbazar_mobile/shared/theme/employer/theme.dart';
 import 'package:jobbazar_mobile/provider/job_provider.dart';
-import 'package:jobbazar_mobile/shared/appbar.dart';
 import 'package:jobbazar_mobile/shared/bottom_nav.dart';
 import 'package:jobbazar_mobile/shared/drawer.dart';
-import 'package:jobbazar_mobile/shared/util/card/card_list.dart';
 import 'package:jobbazar_mobile/shared/util/heading/heading_text.dart';
+import 'package:jobbazar_mobile/shared/util/jobs_accordion.dart';
 import 'package:jobbazar_mobile/shared/util/search.dart';
 import 'package:provider/provider.dart';
 
@@ -19,33 +19,36 @@ class AllJobsPage extends StatefulWidget {
 }
 
 class _AllJobsPageState extends State<AllJobsPage> {
-  late ValueNotifier<List<Job>> jobNotifier;
+  late Future<List<Job>> _jobsFuture;
+  String searchQuery = "";
 
   @override
   void initState() {
     super.initState();
-    jobNotifier = ValueNotifier<List<Job>>([]);
+    // Memoize the fetchJobs Future
+    _jobsFuture = fetchJobs();
+  }
+
+  Future<List<Job>> fetchJobs() async {
+    JobProvider jobProvider = Provider.of<JobProvider>(context, listen: false);
+    await jobProvider.fetchJobs();
+    return jobProvider.jobs.reversed.toList();
+  }
+
+  List<Job> filterJobs(List<Job> jobs, String query) {
+    return jobs
+        .where((job) => job.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    JobProvider jobProvider = Provider.of<JobProvider>(context);
-    if (jobProvider.jobs.isEmpty) {
-      jobProvider.fetchJobs();
-    }
-
-    List<Job> jobs = jobProvider.jobs.reversed.toList();
-
-    if (jobNotifier.value != jobs) {
-      jobNotifier.value = jobs;
-    }
-
     return Theme(
-      data: employerTheme, 
+      data: employerTheme,
       child: Builder(
         builder: (context) {
           return Scaffold(
-            appBar: SharedAppBar(title: "JobBazar Mobile - All Jobs", color: Theme.of(context).colorScheme.primary),
+            appBar: const PageAppbar(title: "All Jobs Posted"),
             drawer: const AppDrawer(),
             bottomNavigationBar: const BottomNav(),
             body: Container(
@@ -54,30 +57,54 @@ class _AllJobsPageState extends State<AllJobsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    const HeadingText(title: "All Jobs Posted",),
+                    const HeadingText(title: "All Jobs Posted"),
                     SearchWidget(
                       onSearch: (query) {
-                        debugPrint(query);
-                        var filterJobs = jobs.where(
-                          (job) => job.title.toLowerCase().contains(query.toLowerCase())).toList();
-                        jobNotifier.value = filterJobs;
-                        debugPrint(filterJobs.toString());
-                        debugPrint("job notifier ${jobNotifier.value.toString()}");
+                        setState(() {
+                          searchQuery = query.toLowerCase();
+                        });
                       },
                     ),
-                    ValueListenableBuilder(
-                      valueListenable: jobNotifier,
-                      builder: (context, filteredJobs, _) {
-                        return CardList(jobs: filteredJobs);
-                      },
+                    Expanded(
+                      child: FutureBuilder<List<Job>>(
+                        future: _jobsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Error fetching jobs: ${snapshot.error}',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            );
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                              child: Text('No jobs available'),
+                            );
+                          } else {
+                            // Filter jobs based on the search query
+                            final filteredJobs =
+                                filterJobs(snapshot.data!, searchQuery);
+
+                            return HotJobsAccordion(
+                              jobs: filteredJobs,
+                              isAppliedJobs: true,
+                            );
+                          }
+                        },
+                      ),
                     ),
-                  ]
+                  ],
                 ),
               ),
-            )
+            ),
           );
-        }
-      )
+        },
+      ),
     );
   }
 }

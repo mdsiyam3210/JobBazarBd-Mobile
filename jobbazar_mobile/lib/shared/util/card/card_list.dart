@@ -21,9 +21,9 @@ class _CardListState extends State<CardList> {
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12.0, // Tighten the spacing between cards
-          mainAxisSpacing: 12.0,  // Consistent vertical spacing
-          childAspectRatio: 0.8,  // A taller aspect ratio to emphasize content
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0, 
+          childAspectRatio: 0.8,  
         ),
         itemCount: widget.jobs.length,
         itemBuilder: (BuildContext context, int index) {

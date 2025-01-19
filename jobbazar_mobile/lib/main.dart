@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   debugPrint('App started!'); // Basic print test
+  ErrorWidget.builder = (FlutterErrorDetails details) => Container();
   runApp(
     MultiProvider(
       providers: [

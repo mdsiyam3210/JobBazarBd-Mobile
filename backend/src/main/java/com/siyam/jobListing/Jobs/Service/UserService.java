@@ -34,6 +34,7 @@ public class UserService {
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
             user.setId(id);
+            user.setProfilePicture(userOpt.get().getProfilePicture());
             userRepository.save(user);
             return ResponseEntity.ok(user);
         } else {
